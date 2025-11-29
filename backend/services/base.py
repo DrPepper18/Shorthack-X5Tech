@@ -17,7 +17,7 @@ WHERE question_id = $id
 """
 async def get_text_by_id(text_id: int) -> str:
     async with async_session_maker() as session:
-        stmt = select(ScriptLine.name).where(ScriptLine.id == text_id)
+        stmt = select(ScriptLine).where(ScriptLine.id == text_id)
         result = await session.execute(stmt)
         text_obj = result.scalar_one_or_none()
         return text_obj
@@ -38,9 +38,9 @@ async def get_reply_options(question_id: int) -> list[tuple]:
 
 """
 -- Сохраняем ответ игрока
-INSERT INTO user_reply (user_id, option_id)
+INSERT INTO user_reply (user_id, line_id, option_id)
 VALUES
-    ($user_id, $option_id)
+    ($user_id, $line_id, $option_id)
 
 -- Даем следующую строчку в сценарии
 SELECT leads_to

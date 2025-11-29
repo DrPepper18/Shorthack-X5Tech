@@ -47,9 +47,9 @@ SELECT leads_to
 FROM reply_options
 WHERE option_id = $option_id
 """
-async def save_user_reply(user_id: int, option_id: int):
+async def save_user_reply(user_id: int, line_id: int, option_id: int):
     async with async_session_maker() as session:
-        user_reply = UserReply(user_id=user_id, option_id=option_id)
+        user_reply = UserReply(user_id=user_id, line_id=line_id, option_id=option_id)
         session.add(user_reply)
         await session.commit()
 

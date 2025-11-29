@@ -7,6 +7,7 @@ class ScriptLineRequest(BaseModel):
     user_id: int
     line_id: int | None = None
     option_id: int | None = None
+    line_id_requested: int | None = None
 
 router = APIRouter()
 
@@ -15,13 +16,17 @@ router = APIRouter()
 async def get_scriptline(data: ScriptLineRequest):
 
     if data.option_id:
-        await save_user_reply(user_id=data.user_id, option_id=data.option_id)
+        await save_user_reply(
+            user_id=data.user_id,
+            line_id=data.line_id,
+            option_id=data.option_id
+        )
     
     # Получить текст
     if data.option_id:
         line_id = await get_next_text_id(option_id=data.option_id)
     else:
-        line_id = data.line_id
+        line_id = data.line_id_requested
     
     scriptline = await get_text_by_id(text_id=line_id)
 

@@ -1,15 +1,18 @@
 from models.database import *
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
 import uvicorn
-import asyncio
 from routes import base
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    await init_db()
+    yield
+    # Shutdown (if needed)
+
+app = FastAPI(lifespan=lifespan)
 app.include_router(base.router)
 
-async def startup():
-    await init_db()
-
 if __name__ == "__main__":
-    asyncio.run(startup())
     uvicorn.run(app, host="0.0.0.0", port=8000)

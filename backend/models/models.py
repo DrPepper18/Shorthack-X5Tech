@@ -15,7 +15,7 @@ class ScriptLine(Base):
     name = Column(Text())
 
 class ReplyOption(Base):
-    __tablename__ = "replies"
+    __tablename__ = "reply_options"
     id = Column(BigInteger(), primary_key=True, autoincrement=True)
     question_id = Column(BigInteger())
     text = Column(Text())
@@ -24,5 +24,6 @@ class ReplyOption(Base):
 class UserReply(Base):
     __tablename__ = "user_reply"
     id = Column(BigInteger(), primary_key=True, autoincrement=True)
-    option_id = Column(BigInteger())
     user_id = Column(BigInteger())
+    line_id = Column(BigInteger())
+    option_id = Column(BigInteger())

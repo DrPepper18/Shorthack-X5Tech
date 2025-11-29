@@ -1,0 +1,273 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+    overflow: hidden;
+    transition: background-color 0.5s ease;
+}
+
+.container {
+    display: flex;
+    width: 80%;
+    max-width: 800px;
+    position: relative;
+    align-items: center;
+}
+
+/* Стили для логотипа в левом верхнем углу */
+.logo {
+    position: absolute;
+    top: -60px; /* Расположение над контейнером */
+    left: 0;
+    width: 100px; /* Ширина маленького прямоугольника */
+    height: 50px; /* Высота маленького прямоугольника */
+    background-image: url('logo.png'); /* Путь к вашему PNG файлу */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 10;
+}
+
+/* Если PNG файл не загрузится, покажем заглушку */
+.logo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+    display: none; /* Скрываем по умолчанию */
+}
+
+.logo.loading::before {
+    display: block; /* Показываем только если PNG не загрузился */
+}
+
+.dialogue-box {
+    flex: 1;
+    background: transparent;
+    padding: 0;
+    margin-right: 30px;
+    border: none;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.question {
+    font-size: 1.3em;
+    padding: 20px 25px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    text-align: center;
+    font-weight: 500;
+    color: #333;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+.answers {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.answer {
+    padding: 16px 25px;
+    border: none;
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1em;
+    color: #333;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    text-align: center;
+}
+
+.answer:hover {
+    background: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+}
+
+.answer:active {
+    transform: translateY(-1px);
+}
+
+.character {
+    width: 150px;
+    height: 400px;
+    background: black;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+/* Экран статистики */
+.stats-screen {
+    text-align: center;
+    padding: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    color: white;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    max-width: 500px;
+    width: 90%;
+}
+
+.stats-content {
+    margin-top: 30px;
+}
+
+.stat-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.stats-button {
+    padding: 15px 30px;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.stats-button:hover {
+    background: #ff5252;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.stats-button:active {
+    transform: translateY(-1px);
+}
+
+/* Анимации */
+.slide-out-right {
+    animation: slideOutRight 0.5s forwards;
+}
+
+.fall-down {
+    animation: fallDown 0.5s forwards;
+}
+
+.slide-in-right {
+    animation: slideInRight 0.5s forwards;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s forwards;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.fade-out {
+    animation: fadeOut 0.5s forwards;
+}
+
+@keyframes slideOutRight {
+    to {
+        transform: translateX(100vw);
+        opacity: 0;
+    }
+}
+
+@keyframes fallDown {
+    to {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100vw);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+
+
+
+
+
+
+
+
+/* Стили для логотипа в левом верхнем углу */
+.logo {
+    position: absolute;
+    top: -60px;
+    left: 0;
+    width: 100px;
+    height: 50px;
+    z-index: 10;
+    /* Можно добавить дополнительные стили для div */
+    border-radius: 8px;
+    overflow: hidden; /* Обрезает изображение если выходит за границы */
+}
+
+.logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Сохраняет пропорции изображения */
+    display: block; /* Убирает лишние отступы */
+}
+
+/* Заглушка если изображение не загрузилось */
+.logo:has(img[src=""]) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.logo:has(img[src=""])::after {
+    content: "Лого";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: white;
+    font-size: 14px;
+}

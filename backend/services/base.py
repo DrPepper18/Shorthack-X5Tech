@@ -20,7 +20,7 @@ async def get_text_by_id(text_id: int) -> str:
         stmt = select(ScriptLine).where(ScriptLine.id == text_id)
         result = await session.execute(stmt)
         text_obj = result.scalar_one_or_none()
-        return text_obj
+        return text_obj.name if text_obj else None
     
 
 async def get_reply_options(question_id: int) -> list[tuple]:
@@ -57,5 +57,7 @@ async def get_next_text_id(option_id: int) -> int:
     async with async_session_maker() as session:
         stmt = select(ReplyOption.leads_to).where(ReplyOption.id == option_id)
         result = await session.execute(stmt)
-        next_text_id = result.scalar_one()
+        next_text_id = result.scalar_one_or_none()
+        if next_text_id is None:
+            raise ValueError(f"Option with id {option_id} not found or has no leads_to")
         return next_text_id

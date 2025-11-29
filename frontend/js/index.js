@@ -1,46 +1,58 @@
-// Данные вопросов и ответов (в реальном приложении будут загружаться с сервера)
-const questions = [
-    {
-        id: 1,
-        question: "Какой ваш любимый цвет?",
-        answers: [
-            { id: 1, text: "Красный", leads_to: 2 },
-            { id: 2, text: "Синий", leads_to: 2 },
-            { id: 3, text: "Зеленый", leads_to: 2 }
-        ]
+// Данные сцен (будет заполняться с бэкенда)
+const scenesData = {
+    1: {
+        image: "assets/scene1.jpg",
+        type: "question",
+        content: {
+            question: "Какое у вас настроение сегодня?",
+            answers: [
+                { text: "Отличное! 😊", next: 2 },
+                { text: "Нормальное 😐", next: 2 },
+                { text: "Не очень 😔", next: 2 }
+            ]
+        }
     },
-    {
-        id: 2,
-        question: "Какое ваше любимое время года?",
-        answers: [
-            { id: 4, text: "Весна", leads_to: 3 },
-            { id: 5, text: "Лето", leads_to: 3 },
-            { id: 6, text: "Зима", leads_to: 3 }
-        ]
+    2: {
+        image: "assets/scene2.jpg", 
+        type: "text",
+        content: {
+            title: "До дедлайна 3 секунды...",
+            dialogue: "Ты слышишь тик часов? ДЕДЛАЙН УЖЕ БЛИЗКО",
+            answers: [
+                { text: "Я почти доделал, ещё 5 минут!", next: 3 }
+            ]
+        }
     },
-    {
-        id: 3,
-        question: "Какой жанр фильмов вы предпочитаете?",
-        answers: [
-            { id: 7, text: "Комедия", leads_to: null },
-            { id: 8, text: "Драма", leads_to: null },
-            { id: 9, text: "Фантастика", leads_to: null }
-        ]
+    3: {
+        image: "assets/scene3.jpg",
+        type: "question", 
+        content: {
+            question: "Какой жанр фильмов вы предпочитаете?",
+            answers: [
+                { text: "Комедия", next: 4 },
+                { text: "Драма", next: 4 },
+                { text: "Фантастика", next: 4 }
+            ]
+        }
+    },
+    4: {
+        image: "assets/scene4.jpg",
+        type: "dark",
+        content: {
+            character: "Темная фигура: Ты слышишь тик часов?",
+            urgent: "ДЕДЛАЙН УЖЕ БЛИЗКО",
+            response: "Я почти доделал, ещё 5 минут!",
+            answers: [
+                { text: "[ Кто ты? ]", next: "stats" },
+                { text: "[ Моя магия? ]", next: "stats" }
+            ]
+        }
     }
-];
+};
 
-// Хранилище ответов пользователя
+let currentSceneId = 1;
 const userAnswers = [];
-let currentQuestionIndex = 0;
 
-const questionElement = document.getElementById('question');
-const answersContainer = document.getElementById('answers');
-const character = document.getElementById('character');
-const mainContainer = document.getElementById('mainContainer');
-const statsScreen = document.getElementById('statsScreen');
-const restartButton = document.getElementById('restartButton');
-
-// Имитация работы с базой данных
 class DatabaseService {
     constructor() {
         this.userId = this.generateUserId();
@@ -48,34 +60,29 @@ class DatabaseService {
     }
 
     generateUserId() {
-        return Date.now(); // Простая имитация ID пользователя
+        return Date.now();
     }
 
     async initializeUser() {
-        // Имитация создания пользователя в базе
         console.log('Создан пользователь с ID:', this.userId);
-        // В реальном приложении здесь был бы запрос: INSERT INTO users (id, is_admin) VALUES (${this.userId}, false)
     }
 
-    async saveUserReply(questionId, optionId) {
-        // Имитация сохранения ответа в базу
-        console.log(`Сохранение ответа: user_id=${this.userId}, question_id=${questionId}, option_id=${optionId}`);
-        
-        // В реальном приложении здесь был бы запрос:
-        // INSERT INTO user_reply (user_id, option_id) VALUES (${this.userId}, ${optionId})
+    async saveUserReply(sceneId, answerText, nextScene) {
+        console.log(`Ответ: user_id=${this.userId}, scene_id=${sceneId}, answer="${answerText}", next=${nextScene}`);
         
         userAnswers.push({
             user_id: this.userId,
-            question_id: questionId,
-            option_id: optionId,
+            scene_id: sceneId,
+            answer: answerText,
+            next_scene: nextScene,
             timestamp: new Date().toISOString()
         });
     }
 
     async getUserStats() {
-        // Имитация получения статистики
         return {
             totalAnswers: userAnswers.length,
+            scenesCompleted: [...new Set(userAnswers.map(a => a.scene_id))].length,
             firstAnswer: userAnswers[0],
             lastAnswer: userAnswers[userAnswers.length - 1]
         };
@@ -84,147 +91,86 @@ class DatabaseService {
 
 const dbService = new DatabaseService();
 
-function showQuestion(index) {
-    const q = questions[index];
-    questionElement.textContent = q.question;
-    
-    // Очищаем и создаем новые варианты ответов
-    answersContainer.innerHTML = '';
-    q.answers.forEach((answer) => {
-        const answerElement = document.createElement('div');
-        answerElement.className = 'answer';
-        answerElement.textContent = answer.text;
-        answerElement.dataset.answerId = answer.id;
-        answerElement.dataset.leadsTo = answer.leads_to;
-        answerElement.addEventListener('click', handleAnswerClick);
-        answersContainer.appendChild(answerElement);
-    });
+// Инициализация сцены
+function initializeScene(sceneId) {
+    const sceneElement = document.getElementById(`scene${sceneId}`);
+    if (!sceneElement) return;
 
-    // Сбрасываем стили для анимации появления
-    questionElement.style.opacity = '1';
-    answersContainer.style.opacity = '1';
-    character.style.opacity = '1';
-    
-    // Сбрасываем позицию персонажа
-    character.style.transform = 'translateX(0)';
+    // Добавляем обработчики для ответов
+    const answers = sceneElement.querySelectorAll('.answer, .dark-answer');
+    answers.forEach(answer => {
+        answer.addEventListener('click', function() {
+            const nextScene = this.getAttribute('data-next');
+            handleAnswer(sceneId, this.textContent, nextScene);
+        });
+    });
 }
 
-function handleAnswerClick(event) {
-    const selectedAnswer = event.currentTarget;
-    const answerId = parseInt(selectedAnswer.dataset.answerId);
-    const leadsTo = selectedAnswer.dataset.leadsTo ? parseInt(selectedAnswer.dataset.leadsTo) : null;
+// Обработка ответа
+function handleAnswer(sceneId, answerText, nextScene) {
+    // Сохраняем ответ
+    dbService.saveUserReply(sceneId, answerText, nextScene);
     
-    // Сохраняем ответ в базу
-    const currentQuestion = questions[currentQuestionIndex];
-    dbService.saveUserReply(currentQuestion.id, answerId);
-
-    // Визуальное выделение выбранного ответа
-    selectedAnswer.style.background = '#e3f2fd';
-    selectedAnswer.style.borderColor = '#2196f3';
-
-    // Блокируем дальнейшие клики
-    const allAnswers = document.querySelectorAll('.answer');
-    allAnswers.forEach(answer => {
-        answer.style.pointerEvents = 'none';
-    });
-
-    // Анимация ухода персонажа вправо (ИЗМЕНЕНО)
-    character.classList.add('slide-out-right');
+    // Анимация перехода
+    const currentScene = document.getElementById(`scene${sceneId}`);
+    currentScene.classList.remove('active');
+    currentScene.classList.add('hidden');
     
-    // Анимация исчезновения вопроса
-    questionElement.style.opacity = '0';
-    
-    // Анимация падения ответов вниз
-    allAnswers.forEach(answer => {
-        answer.classList.add('fall-down');
-    });
-
-    // Определяем следующий вопрос
     setTimeout(() => {
-        if (leadsTo !== null) {
-            // Переход к следующему вопросу
-            const nextQuestionIndex = questions.findIndex(q => q.id === leadsTo);
-            if (nextQuestionIndex !== -1) {
-                currentQuestionIndex = nextQuestionIndex;
-                showQuestion(currentQuestionIndex);
-                
-                // Анимация появления нового контента
-                character.classList.remove('slide-out-right');
-                character.classList.add('slide-in-right');
-                
-                setTimeout(() => {
-                    character.classList.remove('slide-in-right');
-                }, 500);
-            }
-        } else {
-            // Это был последний вопрос - показываем статистику
+        if (nextScene === 'stats') {
             showStatsScreen();
+        } else {
+            const nextSceneId = parseInt(nextScene);
+            const nextSceneElement = document.getElementById(`scene${nextSceneId}`);
+            if (nextSceneElement) {
+                nextSceneElement.classList.remove('hidden');
+                nextSceneElement.classList.add('active');
+                currentSceneId = nextSceneId;
+            } else {
+                showStatsScreen();
+            }
         }
-    }, 1000);
+    }, 300);
 }
 
+// Показать статистику
 function showStatsScreen() {
-    // Скрываем основной контейнер
-    mainContainer.classList.add('hidden');
-    
-    // Показываем экран статистики
+    document.querySelector('.mobile-frame').classList.add('hidden');
+    const statsScreen = document.getElementById('statsScreen');
     statsScreen.classList.remove('hidden');
     statsScreen.classList.add('fade-in');
     
-    // Меняем фон страницы
-    document.body.style.backgroundColor = '#2c3e50';
-    
-    // Загружаем статистику
     dbService.getUserStats().then(stats => {
-        console.log('Статистика пользователя:', stats);
-        // Здесь можно обновить UI с реальной статистикой
+        console.log('Статистика:', stats);
     });
 }
 
+// Перезапуск квиза
 function restartQuiz() {
-    // Сбрасываем состояние
     userAnswers.length = 0;
-    currentQuestionIndex = 0;
+    currentSceneId = 1;
     
-    // Скрываем статистику
-    statsScreen.classList.add('hidden');
-    statsScreen.classList.remove('fade-in');
+    document.getElementById('statsScreen').classList.add('hidden');
+    document.querySelector('.mobile-frame').classList.remove('hidden');
     
-    // Показываем основной контейнер
-    mainContainer.classList.remove('hidden');
+    // Сбрасываем все сцены
+    document.querySelectorAll('.scene-card').forEach(card => {
+        card.classList.add('hidden');
+        card.classList.remove('active');
+    });
     
-    // Восстанавливаем фон
-    document.body.style.backgroundColor = '#f0f0f0';
-    
-    // Показываем первый вопрос
-    showQuestion(currentQuestionIndex);
-    
-    // Сбрасываем анимации персонажа
-    character.classList.remove('slide-out-right', 'slide-in-right');
-    character.style.opacity = '1';
-    character.style.transform = 'translateX(0)';
+    // Показываем первую сцену
+    document.getElementById('scene1').classList.remove('hidden');
+    document.getElementById('scene1').classList.add('active');
 }
 
-// Обработчики событий
-restartButton.addEventListener('click', restartQuiz);
-restartButton.addEventListener('mouseenter', function() {
-    this.style.transform = 'translateY(-3px)';
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализируем все сцены
+    for (let i = 1; i <= 4; i++) {
+        initializeScene(i);
+    }
+    
+    // Обработчик для кнопки перезапуска
+    document.getElementById('restartButton').addEventListener('click', restartQuiz);
 });
-restartButton.addEventListener('mouseleave', function() {
-    this.style.transform = 'translateY(0)';
-});
-
-// Инициализация первого вопроса
-showQuestion(currentQuestionIndex);
-
-
-
-
-
-
-
-
-
-
-
-

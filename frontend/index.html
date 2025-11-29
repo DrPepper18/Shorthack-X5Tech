@@ -1,89 +1,46 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    <title>Кинотеатр MSHP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивная история</title>
     <link rel="stylesheet" href="css/index.css">
-    <script src="js/index.js" defer></script>
-    <!-- <link rel="icon" href="assets/favicon.png" type="icon/png"> -->
 </head>
-
 <body>
-    <div class="mobile-frame">
+    <div class="dark-figure">
+    <img src="assets/Vector 5.png" alt="Темная фигура">
+</div>
+    <div class="cards-container">
         
-        <!-- Сцена 1: Полноэкранная карточка с фото -->
-        <div class="scene-card active" id="scene1" data-scene-id="1">
-            <img src="assets/scene1.jpg" alt="Сцена 1" class="scene-image">
-            <div class="scene-content">
-                <div class="question">Какое у вас настроение сегодня?</div>
-                <div class="answers">
-                    <div class="answer" data-next="2">Отличное! 😊</div>
-                    <div class="answer" data-next="2">Нормальное 😐</div>
-                    <div class="answer" data-next="2">Не очень 😔</div>
+        <!-- Карточка 1: Текст посередине -->
+        <div class="card active" id="card1">
+            <div class="card-content">
+                <h1>Темная ночь. Лишь яркий белый свет от монитора освещает пустой кабинет. Дрожащими руками ты открываешь вкладку с задачи. Неописуемые ужас захватывает твой разум</h1>
+            </div>
+        </div>
+        
+        <!-- Карточка 2: Вопрос с вариантами ответа -->
+        <div class="card" id="card2">
+            <div class="card-content">
+                <h2 class="question">- Темная фигура: Ты слышишь тик часов? ДЕДЛАЙН УЖЕ БЛИЗКО</h2>
+                <div class="options">
+                    <button class="option-btn">Я почти доделал, ещё 5 минут!</button>
+                    <button class="option-btn">Кто ты?</button>
+                    <button class="option-btn">*Молчание*</button>
                 </div>
             </div>
         </div>
-
-        <!-- Сцена 2: Полноэкранная карточка с фото -->
-        <div class="scene-card hidden" id="scene2" data-scene-id="2">
-            <img src="assets/scene2.jpg" alt="Сцена 2" class="scene-image">
-            <div class="scene-content">
-                <div class="question-text">До дедлайна 3 секунды...</div>
-                <div class="dialogue-text">Ты слышишь тик часов? ДЕДЛАЙН УЖЕ БЛИЗКО</div>
-                <div class="answers">
-                    <div class="answer" data-next="3">Я почти доделал, ещё 5 минут!</div>
-                </div>
+        
+        <!-- Карточка 3: Простая информация -->
+        <div class="card" id="card3">
+            <div class="card-content">
+                <h2>Спасибо за участие!</h2>
+                <p>Вам отправлена заявка</p>
             </div>
-        </div>
-
-        <!-- Сцена 3: Полноэкранная карточка с фото -->
-        <div class="scene-card hidden" id="scene3" data-scene-id="3">
-            <img src="assets/scene3.jpg" alt="Сцена 3" class="scene-image">
-            <div class="scene-content">
-                <div class="question">Какой жанр фильмов вы предпочитаете?</div>
-                <div class="answers">
-                    <div class="answer" data-next="4">Комедия</div>
-                    <div class="answer" data-next="4">Драма</div>
-                    <div class="answer" data-next="4">Фантастика</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Сцена 4: Полноэкранная карточка с фото -->
-        <div class="scene-card hidden" id="scene4" data-scene-id="4">
-            <img src="assets/scene4.jpg" alt="Сцена 4" class="scene-image">
-            <div class="scene-content dark-content">
-                <div class="character-dialogue">Темная фигура: Ты слышишь тик часов?</div>
-                <div class="urgent-text">ДЕДЛАЙН УЖЕ БЛИЗКО</div>
-                <div class="response-text">Я почти доделал, ещё 5 минут!</div>
-                <div class="answers">
-                    <div class="dark-answer" data-next="stats">[ Кто ты? ]</div>
-                    <div class="dark-answer" data-next="stats">[ Моя магия? ]</div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Экран статистики -->
-    <div class="stats-screen hidden" id="statsScreen">
-        <h2>Спасибо за ответы!</h2>
-        <p>Ваши ответы сохранены в базе данных.</p>
-        <div class="stats-content">
-            <div class="stat-item">
-                <h3>Статистика ответов</h3>
-                <p>Все ответы успешно записаны</p>
-            </div>
-            <button class="stats-button" id="restartButton">Пройти еще раз</button>
         </div>
     </div>
 
+    <!-- Только один скрипт -->
     <script src="js/index.js"></script>
 </body>
-
 </html>
-
-<!-- <section class="places session-1"></section> -->

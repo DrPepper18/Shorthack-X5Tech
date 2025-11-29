@@ -1,270 +1,146 @@
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #000;
+    font-family: Arial, sans-serif;
+    background: radial-gradient(circle, #6EA91E 0%, #BEBB16 100%);
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
     padding: 20px;
 }
 
-/* Основной контейнер строго 390x844 */
-.mobile-frame {
-    width: 390px;
-    height: 844px;
-    background: white;
-    border-radius: 40px;
-    overflow: hidden;
+.cards-container {
     position: relative;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    width: 400px;
+    height: 500px;
+    perspective: 1000px;
 }
 
-/* Стили для карточек сцен */
-.scene-card {
+.card {
     position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
-    transition: opacity 0.5s ease;
-}
-
-.scene-card.active {
-    opacity: 1;
-    z-index: 2;
-}
-
-.scene-card.hidden {
-    opacity: 0;
-    z-index: 1;
-    pointer-events: none;
-}
-
-/* Полноэкранное изображение сцены */
-.scene-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-/* Контент поверх изображения */
-.scene-content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 30px 25px;
-    background: linear-gradient(transparent 0%, rgba(0, 0, 0, 0.8) 100%);
-    color: white;
-    min-height: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-}
-
-/* Стили для вопросов */
-.question {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 25px;
-    text-align: center;
-    line-height: 1.3;
-}
-
-.question-text {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 15px;
-    text-align: center;
-    color: #ff6b6b;
-}
-
-.dialogue-text {
-    font-size: 18px;
-    margin-bottom: 30px;
-    text-align: center;
-    opacity: 0.9;
-}
-
-/* Стили для тёмной сцены */
-.dark-content {
-    background: linear-gradient(transparent 0%, rgba(0, 0, 0, 0.9) 100%);
-}
-
-.character-dialogue {
-    font-size: 20px;
-    margin-bottom: 10px;
-    text-align: center;
-    color: #ff6b6b;
-    font-weight: 600;
-}
-
-.urgent-text {
-    font-size: 24px;
-    margin-bottom: 20px;
-    text-align: center;
-    color: #ff4757;
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-.response-text {
-    font-size: 16px;
-    margin-bottom: 30px;
-    text-align: center;
-    opacity: 0.8;
-    font-style: italic;
-}
-
-/* Контейнер для ответов */
-.answers {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-/* Стили для обычных ответов */
-.answer {
-    padding: 18px 20px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 15px;
-    font-size: 16px;
-    font-weight: 500;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-    backdrop-filter: blur(10px);
-}
-
-.answer:hover {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.5);
-    transform: translateY(-2px);
-}
-
-/* Стили для тёмных ответов */
-.dark-answer {
-    padding: 16px 20px;
-    background: rgba(45, 45, 45, 0.8);
-    border: 1px solid #555;
-    border-radius: 10px;
-    font-size: 15px;
-    color: #e0e0e0;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-    backdrop-filter: blur(10px);
-}
-
-.dark-answer:hover {
-    background: rgba(65, 65, 65, 0.9);
-    border-color: #667eea;
-    transform: translateX(5px);
-}
-
-/* Экран статистики */
-.stats-screen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 390px;
-    height: 844px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    padding: 30px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 40px 30px;
     text-align: center;
-    z-index: 1000;
-    border-radius: 40px;
+    transition: transform 0.6s, opacity 0.6s;
+    opacity: 0;
+    transform: translateX(100%) rotateY(20deg);
+    cursor: pointer;
 }
 
-.stats-content {
+.card.active {
+    opacity: 1;
+    transform: translateX(0) rotateY(0);
+    z-index: 10;
+}
+
+.card.previous {
+    transform: translateX(-100%) rotateY(-20deg);
+    opacity: 0;
+    z-index: 5;
+}
+
+.card-content {
     width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.stat-item {
-    background: rgba(255, 255, 255, 0.15);
-    padding: 25px;
-    border-radius: 20px;
-    margin-bottom: 25px;
-    backdrop-filter: blur(10px);
+.card h1, .card h2 {
+    margin-bottom: 20px;
+    color: #333;
 }
 
-.stat-item h3 {
-    font-size: 22px;
-    margin-bottom: 10px;
+.card p {
+    color: #666;
+    line-height: 1.6;
 }
 
-.stat-item p {
-    font-size: 16px;
-    opacity: 0.9;
+/* Стили для карточки с вопросом */
+.question {
+    margin-bottom: 40px;
+    font-size: 1.5rem;
 }
 
-.stats-button {
-    padding: 18px 35px;
-    background: #ff6b6b;
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.option-btn {
+    padding: 15px 20px;
+    background: #6EA91E;
     color: white;
     border: none;
-    border-radius: 25px;
-    font-size: 17px;
-    font-weight: 600;
+    border-radius: 10px;
+    font-size: 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+    transition: background 0.3s, transform 0.2s;
 }
 
-.stats-button:hover {
-    background: #ff5252;
-    transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(255, 107, 107, 0.4);
+.option-btn:hover {
+    background: #5a8c15;
+    transform: translateY(-2px);
 }
 
-/* Анимации */
-.fade-in {
-    animation: fadeIn 0.5s forwards;
+.option-btn:active {
+    transform: translateY(0);
 }
 
-.hidden {
-    display: none !important;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-/* Заглушки для изображений */
-.scene-image[src=""], 
-.scene-image:not([src]) {
-    background: linear-gradient(45deg, #667eea, #764ba2);
-}
-
-.scene-image[src=""]::after, 
-.scene-image:not([src])::after {
-    content: "Изображение сцены";
+/* Индикатор прогресса */
+.progress-indicator {
     position: absolute;
-    top: 50%;
+    bottom: 20px;
     left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 18px;
-    font-weight: 600;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 20;
+}
+
+.progress-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transition: background 0.3s;
+}
+
+.progress-dot.active {
+    background: white;
+}
+
+
+.dark-figure {
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.dark-figure img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    display:block
 }
